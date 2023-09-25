@@ -1,49 +1,15 @@
 <template>
-  <div class='container'>
-    <users-list></users-list>
-  </div>
-  <div class="container">
-    <div class="block" :class="{ animate: animatedBlock }"></div>
-    <button @click="animateBlock">Animate</button>
-  </div>
-  <div class="container">
-    <transition
-    :css="false"
-    @before-enter="beforeEnter"
-    @enter="enter"
-    @after-enter="afterEnter"
-    @before-leave="beforeLeave"
-    @leave="leave"
-    @after-leave="afterLeave"
-    @enter-cancelled="enterCancelled"
-    @leave-cancelled="leaveCancelled">
-      <p v-if="paraIsVisible">This is only sometimes visible...</p>
-    </transition>
-    <button @click="toggleParagraoh">Toggle Paragraph</button>
-  </div>
-  <div class="container">
-    <transition name="fade-button" mode="out-in">
-      <button @click="showUsers" v-if="!usersAreVisible">Show Users</button>
-      <button @click="hideUsers" v-else>Hide Users</button>
-    </transition>
-  </div>
-  <base-modal @close="hideDialog" :open="dialogIsVisible">
-    <p>This is a test dialog!</p>
-    <button @click="hideDialog">Close it!</button>
-  </base-modal>
-
-  <div class="container">
-    <button @click="showDialog">Show Dialog</button>
-  </div>
+  
+    <router-view v-slot="slotProps">
+      <transition name="fade-button" mode="out-in">
+        <component :is="slotProps.Component"></component>
+      </transition>
+    </router-view>
+  
 </template>
 
 <script>
-import UsersList from './components/UsersList.vue';
-
 export default {
-  components: {
-    UsersList
-  },
   data() {
     return {
       animatedBlock: false,
@@ -51,7 +17,7 @@ export default {
       paraIsVisible: false,
       usersAreVisible: false,
       enterInterval: null,
-      leaveInterval: null
+      leaveInterval: null,
     };
   },
   methods: {
@@ -64,12 +30,12 @@ export default {
       clearInterval(this.leaveInterval);
     },
     beforeEnter(el) {
-      console.log('beforeEnter');
+      console.log("beforeEnter");
       console.log(el);
       el.style.opacity = 0;
     },
     enter(el, done) {
-      console.log('enetr');
+      console.log("enetr");
       console.log(el);
       let round = 1;
       this.enterInterval = setInterval(() => {
@@ -82,29 +48,29 @@ export default {
       }, 20);
     },
     afterEnter(el) {
-      console.log('afterEnter');
+      console.log("afterEnter");
       console.log(el);
     },
     beforeLeave(el) {
-      console.log('beforeLeave');
+      console.log("beforeLeave");
       console.log(el);
       el.style.opacity = 1;
     },
     leave(el, done) {
-      console.log('leave');
+      console.log("leave");
       console.log(el);
       let round = 1;
-     this.leaveInterval = setInterval(() => {
-      el.style.opacity = 1 - round * 0.01;
-      round++;
-      if (round > 100) {
-        clearInterval(this.leaveInterval);
-        done();
-      }
+      this.leaveInterval = setInterval(() => {
+        el.style.opacity = 1 - round * 0.01;
+        round++;
+        if (round > 100) {
+          clearInterval(this.leaveInterval);
+          done();
+        }
       }, 20);
     },
     afterLeave(el) {
-      console.log('afetreLeave');
+      console.log("afetreLeave");
       console.log(el);
     },
     showUsers() {
@@ -178,9 +144,9 @@ button:active {
 
 .fade-button-enter-from,
 .fade-button-leave-to {
-opacity: 0;
+  opacity: 0;
 }
-.fade-button-enter-active{
+.fade-button-enter-active {
   transition: opasity 0.3s ease-out;
 }
 .fade-button-leave-active {
@@ -189,6 +155,13 @@ opacity: 0;
 .fade-button-enter-to,
 .fade-button-leave-from {
   opacity: 1;
+}
+
+.route-enter-active{
+  animation: slide-scale 0.4s ease-out;
+}
+.route-leave-active{
+  animation: slide-scale 0.4s ease-in;
 }
 
 @keyframes slide-scale {
